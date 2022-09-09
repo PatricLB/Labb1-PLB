@@ -30,15 +30,17 @@
             // Uppgiften verkar gå igenom strängen för varje tecken som finns i strängen.
             // Har strängen 20 tecken så är det 20 gången loopen kollar. Man kollar sen på sträng positionen [i]+1 (Där i är hur många gånger man kört igenom strängen sen start) från tidigare iterationer. 
             // Blir [i] == sträng.length så avslutar man metoden.
-            int[] SökGenomArrayOchReturneraPosition1och2(char[] data, char sökOrd)
+            int[] SökGenomArrayOchReturneraPosition1och2(List<char> data, char sökOrd)
             {
                 int[] array = new int[2] { -1, -2 };
                 string temp;
                 string fullSträng = "";
+                bool isBokstav = false;
 
                 int längdPåHanteradSträng;
-                for (int i = 0; i < data.Length; i++)
+                for (int i = 0; i < data.Count; i++)
                 {
+                    isBokstav = false;
                     Console.WriteLine($"Detta är data[{i}]: {data[i]}");
                     if ((data[i] == sökOrd && array[0].Equals(-1)))
                     {
@@ -49,32 +51,49 @@
                     {
                         array[1] = i;
                         Console.WriteLine($"array[1] har värdet: {array[1]} ");
+                        break;
                     }
                     //Denna delen skall nog vara i en övergripande metod högre i arkitekturen
-                    else if (!char.IsDigit(data[i]))
+                    else if ((!char.IsDigit(data[i])) && array[0] != -1)
                     {
-                        Console.WriteLine("Nu kom det en bokstav.");
+                        Console.WriteLine("Nu kom det en bokstav. Inte giltlig");
+                        isBokstav = true;
+                        break;
                     }
                 }
                 längdPåHanteradSträng = 1 + array[1] - array[0];
-                for (int i = 0; i < data.Length; i++)
+                for (int i = 0; i < data.Count; i++)
                 {
                     fullSträng += data[i];
                 }
-                Console.WriteLine($"1: Siffran {sökOrd}");
-                temp = fullSträng.Substring(array[0], längdPåHanteradSträng);
-                Console.WriteLine("Detta är temp: " + temp);
-                Console.WriteLine($"1: Siffran {sökOrd} har position: {array[0]}");
-                Console.WriteLine($"2: Siffran {sökOrd} har position: {array[1]}");
+                if (!isBokstav)
+                {
+                    Console.WriteLine($"1: Siffran {sökOrd}");
+                    temp = fullSträng.Substring(array[0], längdPåHanteradSträng);
+                    Console.WriteLine("Detta är temp: " + temp);
+                    Console.WriteLine($"1: Siffran {sökOrd} har position: {array[0]}");
+                    Console.WriteLine($"2: Siffran {sökOrd} har position: {array[1]}");
 
-                return array;
+                    return array;
+                }
+                else
+                {
+                    return null;
+                }
+                
 
             }
 
+
+
+            // Tanke: Nu skickar jag in en kortare lista hela tiden. Det resulterar i att indexet alltid blir 0 i kolla siffror metoden. Jag håller nu inte koll på vilka siffror som kommit innan. Dock vet jag vilket index jag börjar på i denna metoden
+            // Man skulle kunna skriva ut all text innan man börjar gå igenom strängen och göra den röd ifall det blir match.
+            // Hantera returnvärdena som "SökGenomArrayOchReturneraPosition1och2" returnerar och skriv ut text baserat på det.
             void gåGenomSträng1SiffraÅtGången(char[] data)
             {
                 char aktuellSiffra;
-                string hållText;
+                List<char> hållText = new List<char>();
+                
                 for (int indexPåSträng = 0; indexPåSträng < data.Length; indexPåSträng++)
                 {
                     //aktuellSiffra = arrayMedSiffrorIChar[indexPåSträng];
@@ -87,13 +106,37 @@
                         }
                         else
                         {
-                            hållText = data[charPos + indexPåSträng].ToString();
+                            //Console.Write(data[charPos + indexPåSträng]);
+                            hållText.Add(data[charPos + indexPåSträng]);
+                            //hållText += data[charPos + indexPåSträng].ToString();
                             //SökGenomArrayOchReturneraPosition1och2(data, aktuellSiffra);
                         }
                         //Console.Write($"Detta är vad 'hållText' håller: {hållText} ");
-                        Console.Write(hållText);
+                        //Console.Write(hållText);
                         //SökGenomArrayOchReturneraPosition1och2(data, aktuellSiffra);
                     }
+                    // Skriv ut listan och rensa den efter varje hel körning
+                    for (int i = 0; i < hållText.Count; i++)
+                    {
+                        Console.Write(hållText[i]);
+
+                    }
+                    Console.Write(' ');
+
+                    aktuellSiffra = hållText[0];
+                    // Här skall metoden ligga som letar efter siffrorna
+                    // Gör någonting med hålltext här. Ex ta första charen i strängen 
+                    if (char.IsDigit(aktuellSiffra))
+                    {
+                    SökGenomArrayOchReturneraPosition1och2(hållText, aktuellSiffra);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inte en siffra. Fortsätt med nästa");
+                    }
+                    // Rensa hålltext för att påbörja nästa rad
+                    hållText.Clear();
                     Console.WriteLine();
                 }
 
