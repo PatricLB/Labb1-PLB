@@ -6,35 +6,35 @@ namespace Labb1_PLB
     {
         static void Main(string[] args)
         {
-            string exempelText = "29535123p48723487597645723645";
+            string exempelInput = "77788777888777887";
             List<long> tallSomSkallSummeras = new();
 
 
-            char[] myCharArray; myCharArray = görStringTillCharArray(exempelText);
+            char[] myCharArray = görStringTillCharArray(exempelInput);
 
             // Startmetoder:
             gåGenomSträng1SiffraÅtGången(myCharArray);
             SummeraTalen(tallSomSkallSummeras);
 
 
-            void gåGenomSträng1SiffraÅtGången(char[] data)
+            void gåGenomSträng1SiffraÅtGången(char[] exempelInputSomCharArray)
             {
                 char aktuellSiffra;
                 List<char> hållText = new();
                 int[] arrayMedPositioner = { 0, 0 };
                 string talFöljd;
 
-                for (int indexPåSträng = 0; indexPåSträng < data.Length; indexPåSträng++)
+                for (int indexPåSträng = 0; indexPåSträng < exempelInputSomCharArray.Length; indexPåSträng++)
                 {
-                    for (int charPos = 0; charPos < data.Length; charPos++)
+                    for (int charPos = 0; charPos < exempelInputSomCharArray.Length; charPos++)
                     {
-                        if ((charPos + indexPåSträng) >= data.Length)
+                        if ((charPos + indexPåSträng) >= exempelInputSomCharArray.Length)
                         {
                             break;
                         }
                         else
                         {
-                            hållText.Add(data[charPos + indexPåSträng]);
+                            hållText.Add(exempelInputSomCharArray[charPos + indexPåSträng]);
                         }
                     }
                     // Skriv ut listan och rensa den efter varje körning
@@ -50,7 +50,7 @@ namespace Labb1_PLB
                         }
                         else
                         {
-                            SättIhopSträngarMedFärg(exempelText, talFöljd);
+                            SättIhopSträngarMedFärg(exempelInput, talFöljd);
                             Console.WriteLine();
                         }
                     }
@@ -119,6 +119,9 @@ namespace Labb1_PLB
                 int indexDärSubSträngStartar;
                 string nyKlarSträng = "";
 
+                // Följande kod är ett problem. Den tar bort en del av originalsträngen baserat på unika tecken. Detta fungerar inte ifall man bara skriver in tex 1111,222222,3333333 etc.
+                // Måste antagligen göra om hela logiken för detta i så fall
+                // Index positioner kanske är the way to go ändå.
 
                 indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
                 temporärSträng = helaSträngen.Replace(strängSomSkaVaraRöd, "");
