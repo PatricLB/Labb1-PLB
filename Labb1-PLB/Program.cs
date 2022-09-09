@@ -6,7 +6,7 @@ namespace Labb1_PLB
     {
         static void Main(string[] args)
         {
-            string exempelInput = "77788777888777887";
+            string exempelInput = "0123456789101234567890";
             List<long> tallSomSkallSummeras = new();
 
 
@@ -125,11 +125,6 @@ namespace Labb1_PLB
 
                 indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
                 temporärSträng = helaSträngen.Replace(strängSomSkaVaraRöd, "");
-                //Console.WriteLine("helaSträngen: " + helaSträngen);
-                //Console.WriteLine("Strängen som skall tas bort: " + strängSomSkaVaraRöd);
-                //Console.WriteLine("temporärSträng: " + temporärSträng);
-
-                //Console.WriteLine("indexDärSubSträngStartar: " + indexDärSubSträngStartar);
                 for (int i = 0; i < temporärSträng.Length; i++)
                 {
                     if (i == indexDärSubSträngStartar)
