@@ -14,8 +14,7 @@
 
             // Tanke: Om man kör sökmetoden via en array istället så kan man ta alla positioner, sätt färg röd när den hittat indexpositionerna för att sen sätta grå när indexet är större än positionen igen.
             // Det kräver att jag skriver om hela metoden att fungera med arrayer dock.
-            string exempelText = "295p35123p48723487597645723645";
-
+            string exempelText = "29535123p48723487597645723645";
 
             //Testa siffrorna 0-9
             char[] arrayMedSiffrorIChar = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -25,12 +24,75 @@
             //SökGenomSträngOchReturneraPositionAochB(exempelText, '2');
             //SökGenomArrayOchReturneraPosition1och2(exempelText, aktuellSiffra);
             char[] myCharArray; myCharArray = görStringTillCharArray(exempelText);
+
+            // Startmetoder:
             gåGenomSträng1SiffraÅtGången(myCharArray);
+            
 
             // Uppgiften verkar gå igenom strängen för varje tecken som finns i strängen.
             // Har strängen 20 tecken så är det 20 gången loopen kollar. Man kollar sen på sträng positionen [i]+1 (Där i är hur många gånger man kört igenom strängen sen start) från tidigare iterationer. 
             // Blir [i] == sträng.length så avslutar man metoden.
-            int[] SökGenomArrayOchReturneraPosition1och2(List<char> data, char sökOrd)
+            
+
+            // Tanke: Nu skickar jag in en kortare lista hela tiden. Det resulterar i att indexet alltid blir 0 i kolla siffror metoden. Jag håller nu inte koll på vilka siffror som kommit innan. Dock vet jag vilket index jag börjar på i denna metoden
+            // Man skulle kunna skriva ut all text innan man börjar gå igenom strängen och göra den röd ifall det blir match.
+            // Hantera returnvärdena som "SökGenomArrayOchReturneraPosition1och2" returnerar och skriv ut text baserat på det.
+            // UPDATE: Jag kan skriva om "SökGenomArrayOchReturneraPosition1och2" att den skall returnera textsträngen den hittade istället. Därefter kan man modifiera original strängen för att skriva ut färgade texten.
+            // PROBLEM: Lätt att ta bort en subtext i en sträng. Svårt att sätta ihop den igen på samma position.
+            void gåGenomSträng1SiffraÅtGången(char[] data)
+            {
+                char aktuellSiffra;
+                List<char> hållText = new List<char>();
+                int[] arrayMedPositioner = { 0, 0 };
+
+                for (int indexPåSträng = 0; indexPåSträng < data.Length; indexPåSträng++)
+                {
+                    //aktuellSiffra = arrayMedSiffrorIChar[indexPåSträng];
+                    for (int charPos = 0; charPos < data.Length; charPos++)
+                    {
+                        if ((charPos + indexPåSträng) >= data.Length)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            hållText.Add(data[charPos + indexPåSträng]);
+                        }
+                    }
+                    // Skriv ut listan och rensa den efter varje hel körning
+                    Console.Write("Aktuel sträng för listan: ");
+                    for (int i = 0; i < hållText.Count; i++)
+                    {
+                        Console.Write(hållText[i]);
+                    }
+                    Console.WriteLine();
+                    aktuellSiffra = hållText[0];
+                    // Här skall metoden ligga som letar efter siffrorna
+                    // Gör någonting med hålltext här. Ex ta första charen i strängen 
+                    if (char.IsDigit(aktuellSiffra))
+                    {
+                        string test = SökGenomArrayOchReturneraPosition1och2(hållText, aktuellSiffra);
+                        Console.WriteLine("Detta är test: " + test);
+                        if (test == null)
+                        {
+                            Console.WriteLine("Ingen kombination tillgänglig.");
+                        }else { 
+                        SättIhopSträngarMedFärg(" ", test);
+                        }
+                        //Console.WriteLine($"Detta är första och andra positionen i 'arrayMedPositioner': " + arrayMedPositioner[0] + " " + arrayMedPositioner[1]);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Inte en siffra. Fortsätt med nästa");
+                    }
+                    // Rensa hålltext för att påbörja nästa rad
+                    hållText.Clear();
+                    Console.WriteLine();
+                }
+
+            }
+
+            string SökGenomArrayOchReturneraPosition1och2(List<char> data, char sökOrd)
             {
                 int[] array = new int[2] { -1, -2 };
                 string sifferordning;
@@ -41,8 +103,6 @@
                 Console.WriteLine($"Detta är aktuell siffra: {sökOrd}");
                 for (int i = 0; i < data.Count; i++)
                 {
-                    
-
                     //Hämta index på första siffran
                     if ((data[i] == sökOrd && array[0].Equals(-1)))
                     {
@@ -74,11 +134,9 @@
                     //Console.WriteLine($"1: Siffran {sökOrd}");
                     sifferordning = fullSträng.Substring(array[0], längdPåHanteradSträng);
                     Console.WriteLine("Detta är sifferordningen: " + sifferordning);
-                    Console.WriteLine($"1: Siffran {sökOrd} har position: {array[0]}");
-                    Console.WriteLine($"2: Siffran {sökOrd} har position: {array[1]}");
                     isBokstav = false;
 
-                    return array;
+                    return sifferordning;
                 }
                 else
                 {
@@ -86,59 +144,6 @@
                     return null;
                 }
 
-
-            }
-
-
-
-            // Tanke: Nu skickar jag in en kortare lista hela tiden. Det resulterar i att indexet alltid blir 0 i kolla siffror metoden. Jag håller nu inte koll på vilka siffror som kommit innan. Dock vet jag vilket index jag börjar på i denna metoden
-            // Man skulle kunna skriva ut all text innan man börjar gå igenom strängen och göra den röd ifall det blir match.
-            // Hantera returnvärdena som "SökGenomArrayOchReturneraPosition1och2" returnerar och skriv ut text baserat på det.
-            void gåGenomSträng1SiffraÅtGången(char[] data)
-            {
-                char aktuellSiffra;
-                List<char> hållText = new List<char>();
-                int[] arrayMedPositioner = { 0, 0 };
-
-                for (int indexPåSträng = 0; indexPåSträng < data.Length; indexPåSträng++)
-                {
-                    //aktuellSiffra = arrayMedSiffrorIChar[indexPåSträng];
-                    for (int charPos = 0; charPos < data.Length; charPos++)
-                    {
-
-                        if ((charPos + indexPåSträng) >= data.Length)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            hållText.Add(data[charPos + indexPåSträng]);
-                        }
-                    }
-                    // Skriv ut listan och rensa den efter varje hel körning
-                    Console.Write("Aktuel sträng för listan: ");
-                    for (int i = 0; i < hållText.Count; i++)
-                    {
-                        Console.Write(hållText[i]);
-                    }
-                    Console.WriteLine();
-                    aktuellSiffra = hållText[0];
-                    // Här skall metoden ligga som letar efter siffrorna
-                    // Gör någonting med hålltext här. Ex ta första charen i strängen 
-                    if (char.IsDigit(aktuellSiffra))
-                    {
-                        arrayMedPositioner = SökGenomArrayOchReturneraPosition1och2(hållText, aktuellSiffra);
-                        if (arrayMedPositioner != null)
-                            Console.WriteLine($"Detta är första och andra positionen i 'arrayMedPositioner': " + arrayMedPositioner[0] + " " + arrayMedPositioner[1]);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Inte en siffra. Fortsätt med nästa");
-                    }
-                    // Rensa hålltext för att påbörja nästa rad
-                    hållText.Clear();
-                    Console.WriteLine();
-                }
 
             }
             void SättFärg(string färgVal)
@@ -160,6 +165,42 @@
                     tempArray[i] = sträng[i];
 
                 return tempArray;
+            }
+
+            void SättIhopSträngarMedFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "")
+            {
+                //strängSomSkaVaraRöd = "48759764";
+                helaSträngen = "29535123p48723487597645723645";
+                string temporärSträng = "";
+                int indexDärSubSträngStartar;
+                string nyKlarSträng = "";
+
+                indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
+                temporärSträng = helaSträngen.Replace(strängSomSkaVaraRöd, "");
+                Console.WriteLine("helaSträngen: " + helaSträngen);
+                Console.WriteLine("Strängen som skall tas bort: " + strängSomSkaVaraRöd);
+                Console.WriteLine("temporärSträng: " + temporärSträng);
+                int count = 0;
+
+                Console.WriteLine("indexDärSubSträngStartar: " + indexDärSubSträngStartar);
+                for (int i = 0; i < temporärSträng.Length; i++)
+                {
+                    
+                    
+                    if (i == indexDärSubSträngStartar && count == 0)
+                    {
+                        SättFärg("röd");
+                        for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
+                        {
+                            nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
+                            Console.Write(nyKlarSträng);
+                            count = 1;
+                        }
+                        SättFärg("grå");
+                    }
+                    nyKlarSträng = temporärSträng[i].ToString();
+                    Console.Write(nyKlarSträng);
+                }
             }
         }
 
