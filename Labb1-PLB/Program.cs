@@ -27,12 +27,12 @@
 
             // Startmetoder:
             gåGenomSträng1SiffraÅtGången(myCharArray);
-            
+
 
             // Uppgiften verkar gå igenom strängen för varje tecken som finns i strängen.
             // Har strängen 20 tecken så är det 20 gången loopen kollar. Man kollar sen på sträng positionen [i]+1 (Där i är hur många gånger man kört igenom strängen sen start) från tidigare iterationer. 
             // Blir [i] == sträng.length så avslutar man metoden.
-            
+
 
             // Tanke: Nu skickar jag in en kortare lista hela tiden. Det resulterar i att indexet alltid blir 0 i kolla siffror metoden. Jag håller nu inte koll på vilka siffror som kommit innan. Dock vet jag vilket index jag börjar på i denna metoden
             // Man skulle kunna skriva ut all text innan man börjar gå igenom strängen och göra den röd ifall det blir match.
@@ -60,34 +60,39 @@
                         }
                     }
                     // Skriv ut listan och rensa den efter varje hel körning
-                    Console.Write("Aktuel sträng för listan: ");
-                    for (int i = 0; i < hållText.Count; i++)
-                    {
-                        Console.Write(hållText[i]);
-                    }
-                    Console.WriteLine();
+                    // Console.Write("Aktuel sträng för listan: ");
+                    //for (int i = 0; i < hållText.Count; i++)
+                    //{
+                    //    Console.Write(hållText[i]);
+                    //}
+                    //Console.WriteLine();
                     aktuellSiffra = hållText[0];
                     // Här skall metoden ligga som letar efter siffrorna
                     // Gör någonting med hålltext här. Ex ta första charen i strängen 
                     if (char.IsDigit(aktuellSiffra))
                     {
                         string test = SökGenomArrayOchReturneraPosition1och2(hållText, aktuellSiffra);
-                        Console.WriteLine("Detta är test: " + test);
+                        //Console.WriteLine("Detta är test: " + test);
                         if (test == null)
                         {
-                            Console.WriteLine("Ingen kombination tillgänglig.");
-                        }else { 
-                        SättIhopSträngarMedFärg(" ", test);
+                            //Console.WriteLine("Ingen kombination tillgänglig.");
+                        }
+                        else
+                        {
+                            SättIhopSträngarMedFärg(exempelText, test);
+                            //Här ska writeLine vara
+                            Console.WriteLine();
                         }
                         //Console.WriteLine($"Detta är första och andra positionen i 'arrayMedPositioner': " + arrayMedPositioner[0] + " " + arrayMedPositioner[1]);
                     }
                     else
                     {
-                        Console.WriteLine("Inte en siffra. Fortsätt med nästa");
+
+                        //Console.WriteLine("Inte en siffra. Fortsätt med nästa");
                     }
                     // Rensa hålltext för att påbörja nästa rad
                     hållText.Clear();
-                    Console.WriteLine();
+
                 }
 
             }
@@ -100,26 +105,26 @@
                 bool isBokstav = false;
 
                 int längdPåHanteradSträng;
-                Console.WriteLine($"Detta är aktuell siffra: {sökOrd}");
+                //Console.WriteLine($"Detta är aktuell siffra: {sökOrd}");
                 for (int i = 0; i < data.Count; i++)
                 {
                     //Hämta index på första siffran
                     if ((data[i] == sökOrd && array[0].Equals(-1)))
                     {
                         array[0] = i;
-                        Console.WriteLine($"Array[0] är: {array[0]}");
+                        //Console.WriteLine($"Array[0] är: {array[0]}");
                     }
                     //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
                     else if ((data[i] == sökOrd && array[1] == -2) && array[0] != -1)
                     {
                         array[1] = i;
-                        Console.WriteLine($"Array[1] är: {array[1]}");
+                        //Console.WriteLine($"Array[1] är: {array[1]}");
                         break;
                     }
                     //Denna delen skall nog vara i en övergripande metod högre i arkitekturen
                     else if ((!char.IsDigit(data[i])) && array[0] != -1)
                     {
-                        Console.WriteLine("Det var en bokstav ivägen. Inte ett korrekt tal");
+                        // Console.WriteLine("Det var en bokstav ivägen. Inte ett korrekt tal");
                         isBokstav = true;
                         break;
                     }
@@ -133,31 +138,20 @@
                 {
                     //Console.WriteLine($"1: Siffran {sökOrd}");
                     sifferordning = fullSträng.Substring(array[0], längdPåHanteradSträng);
-                    Console.WriteLine("Detta är sifferordningen: " + sifferordning);
+                    //Console.WriteLine("Detta är sifferordningen: " + sifferordning);
                     isBokstav = false;
 
                     return sifferordning;
                 }
                 else
                 {
-                    Console.WriteLine("En bokstav ivägen eller ingen nästkommande siffra tillgänglig.");
+                    //Console.WriteLine("En bokstav ivägen eller ingen nästkommande siffra tillgänglig.");
                     return null;
                 }
 
 
             }
-            void SättFärg(string färgVal)
-            {
-                if (färgVal.Equals("röd"))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-
-                }
-                else if (färgVal.Equals("grå"))
-                {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-            }
+            
             char[] görStringTillCharArray(string sträng)
             {
                 char[] tempArray = new char[sträng.Length];
@@ -170,36 +164,52 @@
             void SättIhopSträngarMedFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "")
             {
                 //strängSomSkaVaraRöd = "48759764";
-                helaSträngen = "29535123p48723487597645723645";
                 string temporärSträng = "";
                 int indexDärSubSträngStartar;
                 string nyKlarSträng = "";
 
                 indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
                 temporärSträng = helaSträngen.Replace(strängSomSkaVaraRöd, "");
-                Console.WriteLine("helaSträngen: " + helaSträngen);
-                Console.WriteLine("Strängen som skall tas bort: " + strängSomSkaVaraRöd);
-                Console.WriteLine("temporärSträng: " + temporärSträng);
-                int count = 0;
+                //Console.WriteLine("helaSträngen: " + helaSträngen);
+                //Console.WriteLine("Strängen som skall tas bort: " + strängSomSkaVaraRöd);
+                //Console.WriteLine("temporärSträng: " + temporärSträng);
 
-                Console.WriteLine("indexDärSubSträngStartar: " + indexDärSubSträngStartar);
+                //Console.WriteLine("indexDärSubSträngStartar: " + indexDärSubSträngStartar);
                 for (int i = 0; i < temporärSträng.Length; i++)
                 {
                     
-                    
-                    if (i == indexDärSubSträngStartar && count == 0)
+                    if (i == indexDärSubSträngStartar )
                     {
                         SättFärg("röd");
                         for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
                         {
                             nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
                             Console.Write(nyKlarSträng);
-                            count = 1;
                         }
                         SättFärg("grå");
+
                     }
+                    
                     nyKlarSträng = temporärSträng[i].ToString();
                     Console.Write(nyKlarSträng);
+                }
+                if (indexDärSubSträngStartar == temporärSträng.Length)
+                {
+                    SättFärg("röd");
+                    Console.Write(strängSomSkaVaraRöd);
+                    SättFärg("grå");
+                }
+            }
+            void SättFärg(string färgVal)
+            {
+                if (färgVal.Equals("röd"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
+                }
+                else if (färgVal.Equals("grå"))
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
                 }
             }
         }
