@@ -6,35 +6,35 @@ namespace Labb1_PLB
     {
         static void Main(string[] args)
         {
-            string exempelInput = "1111111111p1111111111111";
+            string inputSträng = "29535123p48723487597645723645";
             List<long> tallSomSkallSummeras = new();
 
 
-            char[] myCharArray = görStringTillCharArray(exempelInput);
+            char[] strängSomCharArray = görStringTillCharArray(inputSträng);
 
             // Startmetoder:
-            gåGenomSträng1SiffraÅtGången(myCharArray);
+            gåGenomSträng1SiffraÅtGången(strängSomCharArray);
             SummeraTalen(tallSomSkallSummeras);
-            //SkrivUtTextMedRödFärgKLAR();
 
-            void gåGenomSträng1SiffraÅtGången(char[] exempelInputSomCharArray)
+            void gåGenomSträng1SiffraÅtGången(char[] inputSträngSomCharArray)
             {
+                long nummerAttAddera;
                 char aktuellSiffraSOmChar;
                 List<char> hållText = new();
                 int[] arrayMedPositioner = { 0, 0 };
-                string talFöljd;
+                string strängSomSkaVaraRöd;
 
-                for (int indexPåSträng = 0; indexPåSträng < exempelInputSomCharArray.Length; indexPåSträng++)
+                for (int indexPåSträng = 0; indexPåSträng < inputSträngSomCharArray.Length; indexPåSträng++)
                 {
-                    for (int charPos = 0; charPos < exempelInputSomCharArray.Length; charPos++)
+                    for (int charPosition = 0; charPosition < inputSträngSomCharArray.Length; charPosition++)
                     {
-                        if ((charPos + indexPåSträng) >= exempelInputSomCharArray.Length)
+                        if ((charPosition + indexPåSträng) >= inputSträngSomCharArray.Length)
                         {
                             break;
                         }
                         else
                         {
-                            hållText.Add(exempelInputSomCharArray[charPos + indexPåSträng]);
+                            hållText.Add(inputSträngSomCharArray[charPosition + indexPåSträng]);
                         }
                     }
                     // Skriv ut listan och rensa den efter varje körning
@@ -42,16 +42,18 @@ namespace Labb1_PLB
                     // Här skall metoden ligga som letar efter siffrorna
                     if (char.IsDigit(aktuellSiffraSOmChar))
                     {
-                        talFöljd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
+                        strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
 
-                        if (talFöljd == null)
+                        if (strängSomSkaVaraRöd == null)
                         {
                             // Ingen talföljd tillgänglig.
                         }
                         else
                         {
-                            SkrivUtTextMedRödFärgKLAR(exempelInput, talFöljd, indexPåSträng);
+                            SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
                             Console.WriteLine();
+                            nummerAttAddera = long.Parse(strängSomSkaVaraRöd);
+                            tallSomSkallSummeras.Add(nummerAttAddera);
                         }
                     }
                     // Rensa hålltext för att påbörja nästa rad
@@ -112,53 +114,14 @@ namespace Labb1_PLB
 
                 return tempArray;
             }
-            void SättIhopSträngarMedFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
+            void SättFärgTillRöd(bool färgVal)
             {
-                long siffra = 0;
-                string temporärSträng = "";
-                int indexDärSubSträngStartar;
-                string nyKlarSträng = "";
-
-                // Följande kod är ett problem. Den tar bort en del av originalsträngen baserat på unika tecken. Detta fungerar inte ifall man bara skriver in tex 1111,222222,3333333 etc.
-                // Måste antagligen göra om hela logiken för detta i så fall
-                // Index positioner kanske är the way to go ändå.
-
-                indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
-                temporärSträng = helaSträngen.Remove(startIndexPåRödSträng, strängSomSkaVaraRöd.Length);
-                for (int i = 0; i < temporärSträng.Length; i++)
-                {
-                    if (i == indexDärSubSträngStartar)
-                    {
-                        SättFärg("röd");
-                        for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
-                        {
-                            nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
-                            Console.Write(nyKlarSträng);
-                        }
-                        SättFärg("grå");
-                    }
-                    nyKlarSträng = temporärSträng[i].ToString();
-                    Console.Write(nyKlarSträng);
-
-                }
-                if (indexDärSubSträngStartar == temporärSträng.Length)
-                {
-                    SättFärg("röd");
-                    Console.Write(strängSomSkaVaraRöd);
-                    SättFärg("grå");
-                }
-                siffra = long.Parse(strängSomSkaVaraRöd);
-                tallSomSkallSummeras.Add(siffra);
-
-            }
-            void SättFärg(string färgVal)
-            {
-                if (färgVal.Equals("röd"))
+                if (färgVal)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
 
                 }
-                else if (färgVal.Equals("grå"))
+                else if (!färgVal)
                 {
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
@@ -175,24 +138,23 @@ namespace Labb1_PLB
                 return sum;
             }
 
-            void SkrivUtTextMedRödFärgKLAR(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
+            void SkrivUtTextMedRödFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
             {
-                long siffra = 0;
-                string temporärSträng = "";
-                string nyKlarSträng = "";
+                string temporärSträng;
+                string nyKlarSträng;
 
                 temporärSträng = helaSträngen.Remove(startIndexPåRödSträng, strängSomSkaVaraRöd.Length);
                 for (int i = 0; i < temporärSträng.Length; i++)
                 {
                     if (i == startIndexPåRödSträng)
                     {
-                        SättFärg("röd");
+                        SättFärgTillRöd(true);
                         for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
                         {
                             nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
                             Console.Write(nyKlarSträng);
                         }
-                        SättFärg("grå");
+                        SättFärgTillRöd(false);
                     }
                     nyKlarSträng = temporärSträng[i].ToString();
                     Console.Write(nyKlarSträng);
@@ -200,14 +162,10 @@ namespace Labb1_PLB
                 }
                 if (startIndexPåRödSträng == temporärSträng.Length)
                 {
-                    SättFärg("röd");
+                    SättFärgTillRöd(true);
                     Console.Write(strängSomSkaVaraRöd);
-                    SättFärg("grå");
+                    SättFärgTillRöd(false);
                 }
-                siffra = long.Parse(strängSomSkaVaraRöd);
-                tallSomSkallSummeras.Add(siffra);
-
-
             }
 
         }
