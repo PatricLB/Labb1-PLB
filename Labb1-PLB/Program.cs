@@ -6,7 +6,7 @@ namespace Labb1_PLB
     {
         static void Main(string[] args)
         {
-            string exempelInput = "0123456789101234567890";
+            string exempelInput = "1111111111p1111111111111";
             List<long> tallSomSkallSummeras = new();
 
 
@@ -15,11 +15,11 @@ namespace Labb1_PLB
             // Startmetoder:
             gåGenomSträng1SiffraÅtGången(myCharArray);
             SummeraTalen(tallSomSkallSummeras);
-
+            //SkrivUtTextMedRödFärgKLAR();
 
             void gåGenomSträng1SiffraÅtGången(char[] exempelInputSomCharArray)
             {
-                char aktuellSiffra;
+                char aktuellSiffraSOmChar;
                 List<char> hållText = new();
                 int[] arrayMedPositioner = { 0, 0 };
                 string talFöljd;
@@ -38,11 +38,11 @@ namespace Labb1_PLB
                         }
                     }
                     // Skriv ut listan och rensa den efter varje körning
-                    aktuellSiffra = hållText[0];
+                    aktuellSiffraSOmChar = hållText[0];
                     // Här skall metoden ligga som letar efter siffrorna
-                    if (char.IsDigit(aktuellSiffra))
+                    if (char.IsDigit(aktuellSiffraSOmChar))
                     {
-                        talFöljd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffra);
+                        talFöljd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
 
                         if (talFöljd == null)
                         {
@@ -50,7 +50,7 @@ namespace Labb1_PLB
                         }
                         else
                         {
-                            SättIhopSträngarMedFärg(exempelInput, talFöljd);
+                            SkrivUtTextMedRödFärgKLAR(exempelInput, talFöljd, indexPåSträng);
                             Console.WriteLine();
                         }
                     }
@@ -58,7 +58,7 @@ namespace Labb1_PLB
                     hållText.Clear();
                 }
             }
-            string SökGenomListaOchReturneraGiltligSträng(List<char> data, char sökOrd)
+            string SökGenomListaOchReturneraGiltligSträng(List<char> data, char aktuellSiffraSOmChar)
             {
                 int[] array = new int[2] { -1, -2 };
                 string sifferordning;
@@ -69,12 +69,12 @@ namespace Labb1_PLB
                 for (int i = 0; i < data.Count; i++)
                 {
                     //Hämta index på första siffran
-                    if ((data[i] == sökOrd && array[0].Equals(-1)))
+                    if ((data[i] == aktuellSiffraSOmChar && array[0].Equals(-1)))
                     {
                         array[0] = i;
                     }
                     //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
-                    else if ((data[i] == sökOrd && array[1] == -2) && array[0] != -1)
+                    else if ((data[i] == aktuellSiffraSOmChar && array[1] == -2) && array[0] != -1)
                     {
                         array[1] = i;
                         break;
@@ -112,7 +112,7 @@ namespace Labb1_PLB
 
                 return tempArray;
             }
-            void SättIhopSträngarMedFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "")
+            void SättIhopSträngarMedFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
             {
                 long siffra = 0;
                 string temporärSträng = "";
@@ -124,7 +124,7 @@ namespace Labb1_PLB
                 // Index positioner kanske är the way to go ändå.
 
                 indexDärSubSträngStartar = helaSträngen.IndexOf(strängSomSkaVaraRöd);
-                temporärSträng = helaSträngen.Replace(strängSomSkaVaraRöd, "");
+                temporärSträng = helaSträngen.Remove(startIndexPåRödSträng, strängSomSkaVaraRöd.Length);
                 for (int i = 0; i < temporärSträng.Length; i++)
                 {
                     if (i == indexDärSubSträngStartar)
@@ -174,6 +174,42 @@ namespace Labb1_PLB
                 Console.WriteLine("Summan av talen är: " + sum);
                 return sum;
             }
+
+            void SkrivUtTextMedRödFärgKLAR(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
+            {
+                long siffra = 0;
+                string temporärSträng = "";
+                string nyKlarSträng = "";
+
+                temporärSträng = helaSträngen.Remove(startIndexPåRödSträng, strängSomSkaVaraRöd.Length);
+                for (int i = 0; i < temporärSträng.Length; i++)
+                {
+                    if (i == startIndexPåRödSträng)
+                    {
+                        SättFärg("röd");
+                        for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
+                        {
+                            nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
+                            Console.Write(nyKlarSträng);
+                        }
+                        SättFärg("grå");
+                    }
+                    nyKlarSträng = temporärSträng[i].ToString();
+                    Console.Write(nyKlarSträng);
+
+                }
+                if (startIndexPåRödSträng == temporärSträng.Length)
+                {
+                    SättFärg("röd");
+                    Console.Write(strängSomSkaVaraRöd);
+                    SättFärg("grå");
+                }
+                siffra = long.Parse(strängSomSkaVaraRöd);
+                tallSomSkallSummeras.Add(siffra);
+
+
+            }
+
         }
 
     }
