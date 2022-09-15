@@ -6,9 +6,8 @@ namespace Labb1_PLB
     {
         static void Main(string[] args)
         {
-            string inputSträng = "29535123p48723487597645723645";
+            string inputSträng = "29535123p4872348275972645723";
             List<long> tallSomSkallSummeras = new();
-
 
             char[] strängSomCharArray = görStringTillCharArray(inputSträng);
 
@@ -18,8 +17,8 @@ namespace Labb1_PLB
 
             void gåGenomSträng1SiffraÅtGången(char[] inputSträngSomCharArray)
             {
-                long nummerAttAddera;
-                char aktuellSiffraSOmChar;
+                ulong nummerAttAddera;
+                char aktuellSiffraSomChar;
                 List<char> hållText = new();
                 int[] arrayMedPositioner = { 0, 0 };
                 string strängSomSkaVaraRöd;
@@ -38,11 +37,13 @@ namespace Labb1_PLB
                         }
                     }
                     // Skriv ut listan och rensa den efter varje körning
-                    aktuellSiffraSOmChar = hållText[0];
+                    aktuellSiffraSomChar = hållText[0];
                     // Här skall metoden ligga som letar efter siffrorna
-                    if (char.IsDigit(aktuellSiffraSOmChar))
+                    // FinnsDetEnSifferRad
+                    //FinnsDetEnSifferRad(aktuellSiffraSomChar, indexPåSträng);
+                    if (char.IsDigit(aktuellSiffraSomChar))
                     {
-                        strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
+                        strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSomChar);
 
                         if (strängSomSkaVaraRöd == null)
                         {
@@ -52,12 +53,34 @@ namespace Labb1_PLB
                         {
                             SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
                             Console.WriteLine();
-                            nummerAttAddera = long.Parse(strängSomSkaVaraRöd);
-                            tallSomSkallSummeras.Add(nummerAttAddera);
+                            nummerAttAddera = ulong.Parse(strängSomSkaVaraRöd);
+                            tallSomSkallSummeras.Add((long)nummerAttAddera);
                         }
                     }
                     // Rensa hålltext för att påbörja nästa rad
                     hållText.Clear();
+                }
+            }
+            void FinnsDetEnSifferRad(char aktuellSiffraSOmChar, int indexPåSträng)
+            {
+                ulong nummerAttAddera;
+                List<char> hållText = new();
+                string strängSomSkaVaraRöd;
+                if (char.IsDigit(aktuellSiffraSOmChar))
+                {
+                    strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
+
+                    if (strängSomSkaVaraRöd == null)
+                    {
+                        // Ingen talföljd tillgänglig.
+                    }
+                    else
+                    {
+                        SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
+                        Console.WriteLine();
+                        nummerAttAddera = ulong.Parse(strängSomSkaVaraRöd);
+                        tallSomSkallSummeras.Add((long)nummerAttAddera);
+                    }
                 }
             }
             string SökGenomListaOchReturneraGiltligSträng(List<char> data, char aktuellSiffraSOmChar)
@@ -67,6 +90,9 @@ namespace Labb1_PLB
                 string fullSträng = "";
                 bool isBokstav = false;
                 int längdPåHanteradSträng;
+                int startPosition;
+                string returSträng;
+
 
                 for (int i = 0; i < data.Count; i++)
                 {
@@ -89,13 +115,26 @@ namespace Labb1_PLB
                     }
                 }
                 längdPåHanteradSträng = 1 + array[1] - array[0];
+
+                // Nedan del bör kunna vara i en egen metod istället.
+                startPosition = array[0];
+                returSträng = ReturneraSifferordning(data, längdPåHanteradSträng, startPosition, isBokstav);
+
+                return returSträng;
+
+
+            }
+            string ReturneraSifferordning(List<char> data, int längdPåHanteradSträng, int startPosition, bool isBokstav = false)
+            {
+                string sifferordning;
+                string fullSträng = "";
                 for (int i = 0; i < data.Count; i++)
                 {
                     fullSträng += data[i];
                 }
                 if (!isBokstav && längdPåHanteradSträng != -1)
                 {
-                    sifferordning = fullSträng.Substring(array[0], längdPåHanteradSträng);
+                    sifferordning = fullSträng.Substring(startPosition, längdPåHanteradSträng);
                     isBokstav = false;
                     return sifferordning;
                 }
@@ -103,7 +142,7 @@ namespace Labb1_PLB
                 {
                     return null;
                 }
-
+                
 
             }
             char[] görStringTillCharArray(string sträng)
