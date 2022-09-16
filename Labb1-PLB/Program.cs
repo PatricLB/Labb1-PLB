@@ -1,23 +1,22 @@
-﻿namespace Labb1_PLB
+﻿using System.Collections.Generic;
+
+namespace Labb1_PLB
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             string inputSträng = "29535123p48723487597645723645";
-            List<char> strängSomCharArray = görOmStringTillLista(inputSträng);
-
+            List<char> inputSträngSomLista = görStringTillLista(inputSträng);
             List<long> tallSomSkallSummeras = new();
             long summanAvAllaTal;
 
             // Startmetoder:
-            gåGenomSträng1SiffraÅtGången(strängSomCharArray);
-
+            gåGenomListaEnSiffraÅtGången(inputSträngSomLista);
             summanAvAllaTal = SummeraTalen(tallSomSkallSummeras);
-            Console.WriteLine($"Summan av alla tal är: {summanAvAllaTal}");
+            Console.WriteLine($"Summan av talen är: {summanAvAllaTal}");
 
-
-            List<char> görOmStringTillLista(string sträng)
+            List<char> görStringTillLista(string sträng)
             {
                 List<char> tempArray = new List<char>();
                 for (int i = 0; i < sträng.Length; i++)
@@ -25,11 +24,12 @@
 
                 return tempArray;
             }
-            void gåGenomSträng1SiffraÅtGången(List<char> inputSträngSomCharArray)
+           
+            void gåGenomListaEnSiffraÅtGången(List<char> inputSträngSomCharArray)
             {
                 char aktuellSiffraSomChar;
-                List<char> hållText = new();
-                //int[] arrayMedPositioner = { 0, 0 };
+                List<char> delSträngAvInput = new();
+
 
                 for (int indexPåSträng = 0; indexPåSträng < inputSträngSomCharArray.Count; indexPåSträng++)
                 {
@@ -41,79 +41,77 @@
                         }
                         else
                         {
-                            hållText.Add(inputSträngSomCharArray[charPosition + indexPåSträng]);
+                            delSträngAvInput.Add(inputSträngSomCharArray[charPosition + indexPåSträng]);
                         }
                     }
-                    aktuellSiffraSomChar = hållText[0];
-                    FinnsDetEnSifferRad(hållText, aktuellSiffraSomChar, indexPåSträng);
-                    hållText.Clear();
+                    aktuellSiffraSomChar = delSträngAvInput[0];
+                    KollaOmDelsträngÄrGiltig(delSträngAvInput, aktuellSiffraSomChar, indexPåSträng);
+                    delSträngAvInput.Clear();
                 }
             }
-            void FinnsDetEnSifferRad(List<char> hållText, char aktuellSiffraSOmChar, int indexPåSträng)
+           
+            void KollaOmDelsträngÄrGiltig(List<char> delSträngAvInput, char aktuellSiffraSomChar, int indexPåSträng)
             {
-                ulong nummerAttAddera;
+                long nummerAttAddera;
                 string strängSomSkaVaraRöd;
-                try
+                if (char.IsDigit(aktuellSiffraSomChar))
                 {
-                    if (char.IsDigit(aktuellSiffraSOmChar))
-                    {
-                        strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
+                    strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(delSträngAvInput, aktuellSiffraSomChar);
 
+                    if (strängSomSkaVaraRöd != null && strängSomSkaVaraRöd.Length > 1)
+                    {
                         SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
                         Console.WriteLine();
-                        nummerAttAddera = ulong.Parse(strängSomSkaVaraRöd);
-                        tallSomSkallSummeras.Add((long)nummerAttAddera);
+                        nummerAttAddera = long.Parse(strängSomSkaVaraRöd);
+                        tallSomSkallSummeras.Add(nummerAttAddera);
+                    }
+                    else
+                    {
+                        // Ingen giltlig talföljd tillgänglig.
                     }
                 }
-                catch (NullReferenceException)
-                {
-
-                }
             }
+            
             string SökGenomListaOchReturneraGiltligSträng(List<char> data, char aktuellSiffraSOmChar)
             {
-                int[] arrayMedSifferPositioner = new int[2] { 0, 0 };
-                bool harViFörstaSiffran = false;
-                bool harViAndraGemensammaSiffran = false;
+                int[] array = new int[2] { 0,0 };
+                bool harViFörstaBokstaven = false;
+                bool isAndraGemensammaBokstav = false;
                 int längdPåHanteradSträng;
                 int startPosition;
                 string returSträng;
-                try
+
+
+                for (int i = 0; i < data.Count; i++)
                 {
-                    for (int i = 0; i < data.Count; i++)
+                    //Hämta index på första siffran
+                    if (data[i] == aktuellSiffraSOmChar && harViFörstaBokstaven == false)
                     {
-                        //Hämta index på första siffran
-                        if (data[i] == aktuellSiffraSOmChar && harViFörstaSiffran == false)
-                        {
-                            arrayMedSifferPositioner[0] = i;
-                            harViFörstaSiffran = true;
-                        }
-                        //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
-                        else if ((data[i] == aktuellSiffraSOmChar && harViAndraGemensammaSiffran == false) && harViFörstaSiffran == true)
-                        {
-                            arrayMedSifferPositioner[1] = i;
-                            harViAndraGemensammaSiffran = true;
-                        }
-                        else if ((!char.IsDigit(data[i])))
-                        {
-                            return null;
-                        }
+                        array[0] = i;
+                        harViFörstaBokstaven = true;
                     }
-                    längdPåHanteradSträng = 1 + arrayMedSifferPositioner[1] - arrayMedSifferPositioner[0];
-                    startPosition = arrayMedSifferPositioner[0];
-
-                    returSträng = ReturneraSifferordning(data, längdPåHanteradSträng, startPosition);
-
+                    //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
+                    else if ((data[i] == aktuellSiffraSOmChar && isAndraGemensammaBokstav == false) && harViFörstaBokstaven == true)
+                    {
+                        array[1] = i;
+                        isAndraGemensammaBokstav = true;
+                        break;
+                    }
+                    //Denna delen skall nog vara i en övergripande metod högre i arkitekturen
+                    else if ((!char.IsDigit(data[i])))
+                    {
+                        return null;
+                    }
                 }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return null;
-                }
+                längdPåHanteradSträng = 1 + array[1] - array[0];
 
+                startPosition = array[0];
+
+                returSträng = ReturneraSifferordning(data, längdPåHanteradSträng, startPosition);
                 return returSträng;
 
-
             }
+           
             string ReturneraSifferordning(List<char> data, int längdPåHanteradSträng, int startPosition)
             {
                 string sifferordning;
@@ -122,11 +120,19 @@
                 {
                     fullSträng += data[i];
                 }
-                sifferordning = fullSträng.Substring(startPosition, längdPåHanteradSträng);
-
-                return sifferordning;
+                if (längdPåHanteradSträng != 0)
+                {
+                    sifferordning = fullSträng.Substring(startPosition, längdPåHanteradSträng);
+                    return sifferordning;
+                }
+                else
+                {
+                    return null;
+                }
+                
 
             }
+            
             void SkrivUtTextMedRödFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
             {
                 string temporärSträng;
@@ -137,13 +143,13 @@
                 {
                     if (i == startIndexPåRödSträng)
                     {
-                        SättFärgTillRöd(true);
+                        SättTillAnnanFärgBaseratPåLängd(true, strängSomSkaVaraRöd.Length);
                         for (int j = 0; j < strängSomSkaVaraRöd.Length; j++)
                         {
                             nyKlarSträng = strängSomSkaVaraRöd[j].ToString();
                             Console.Write(nyKlarSträng);
                         }
-                        SättFärgTillRöd(false);
+                        SättTillAnnanFärgBaseratPåLängd(false);
                     }
                     nyKlarSträng = temporärSträng[i].ToString();
                     Console.Write(nyKlarSträng);
@@ -151,15 +157,30 @@
                 }
                 if (startIndexPåRödSträng == temporärSträng.Length)
                 {
-                    SättFärgTillRöd(true);
+                    SättTillAnnanFärgBaseratPåLängd(true, strängSomSkaVaraRöd.Length);
                     Console.Write(strängSomSkaVaraRöd);
-                    SättFärgTillRöd(false);
+                    SättTillAnnanFärgBaseratPåLängd(false);
                 }
             }
 
-            void SättFärgTillRöd(bool färgVal)
+
+            void SättTillAnnanFärgBaseratPåLängd(bool färgVal, int siffransLängd = 0)
             {
-                if (färgVal)
+                if (färgVal && siffransLängd <= 4)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                }else if (färgVal && siffransLängd <= 6)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+
+                }
+                else if (färgVal && siffransLängd <= 10)
+                {
+                    Console.ForegroundColor = ConsoleColor.Magenta;
+
+                }
+                else if (färgVal && siffransLängd > 10)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
 
