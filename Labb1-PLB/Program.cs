@@ -1,27 +1,35 @@
-﻿using System.Collections.Generic;
-
-namespace Labb1_PLB
+﻿namespace Labb1_PLB
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             string inputSträng = "29535123p48723487597645723645";
-            List<long> tallSomSkallSummeras = new();
+            List<char> strängSomCharArray = görOmStringTillLista(inputSträng);
 
-            List<char> strängSomCharArray = görStringTillCharArray(inputSträng);
+            List<long> tallSomSkallSummeras = new();
+            long summanAvAllaTal;
 
             // Startmetoder:
             gåGenomSträng1SiffraÅtGången(strängSomCharArray);
-            SummeraTalen(tallSomSkallSummeras);
 
+            summanAvAllaTal = SummeraTalen(tallSomSkallSummeras);
+            Console.WriteLine($"Summan av alla tal är: {summanAvAllaTal}");
+
+
+            List<char> görOmStringTillLista(string sträng)
+            {
+                List<char> tempArray = new List<char>();
+                for (int i = 0; i < sträng.Length; i++)
+                    tempArray.Add(sträng[i]);
+
+                return tempArray;
+            }
             void gåGenomSträng1SiffraÅtGången(List<char> inputSträngSomCharArray)
             {
-                ulong nummerAttAddera;
                 char aktuellSiffraSomChar;
                 List<char> hållText = new();
-                int[] arrayMedPositioner = { 0, 0 };
-                string strängSomSkaVaraRöd;
+                //int[] arrayMedPositioner = { 0, 0 };
 
                 for (int indexPåSträng = 0; indexPåSträng < inputSträngSomCharArray.Count; indexPåSträng++)
                 {
@@ -36,28 +44,8 @@ namespace Labb1_PLB
                             hållText.Add(inputSträngSomCharArray[charPosition + indexPåSträng]);
                         }
                     }
-                    // Skriv ut listan och rensa den efter varje körning
                     aktuellSiffraSomChar = hållText[0];
-                    // Här skall metoden ligga som letar efter siffrorna
-                    // FinnsDetEnSifferRad
                     FinnsDetEnSifferRad(hållText, aktuellSiffraSomChar, indexPåSträng);
-                    //if (char.IsDigit(aktuellSiffraSomChar))
-                    //{
-                    //    strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSomChar);
-
-                    //    if (strängSomSkaVaraRöd == null)
-                    //    {
-                    //        // Ingen talföljd tillgänglig.
-                    //    }
-                    //    else
-                    //    {
-                    //        SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
-                    //        Console.WriteLine();
-                    //        nummerAttAddera = ulong.Parse(strängSomSkaVaraRöd);
-                    //        tallSomSkallSummeras.Add((long)nummerAttAddera);
-                    //    }
-                    //}
-                    // Rensa hålltext för att påbörja nästa rad
                     hållText.Clear();
                 }
             }
@@ -65,63 +53,68 @@ namespace Labb1_PLB
             {
                 ulong nummerAttAddera;
                 string strängSomSkaVaraRöd;
-                if (char.IsDigit(aktuellSiffraSOmChar))
+                try
                 {
-                    strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
+                    if (char.IsDigit(aktuellSiffraSOmChar))
+                    {
+                        strängSomSkaVaraRöd = SökGenomListaOchReturneraGiltligSträng(hållText, aktuellSiffraSOmChar);
 
-                    if (strängSomSkaVaraRöd == null)
-                    {
-                        // Ingen talföljd tillgänglig.
-                    }
-                    else
-                    {
                         SkrivUtTextMedRödFärg(inputSträng, strängSomSkaVaraRöd, indexPåSträng);
                         Console.WriteLine();
                         nummerAttAddera = ulong.Parse(strängSomSkaVaraRöd);
                         tallSomSkallSummeras.Add((long)nummerAttAddera);
                     }
                 }
+                catch (NullReferenceException)
+                {
+
+                }
             }
             string SökGenomListaOchReturneraGiltligSträng(List<char> data, char aktuellSiffraSOmChar)
             {
-                int[] array = new int[2] { -1, -2 };
-                bool isBokstav = false;
+                int[] arrayMedSifferPositioner = new int[2] { 0, 0 };
+                bool harViFörstaSiffran = false;
+                bool harViAndraGemensammaSiffran = false;
                 int längdPåHanteradSträng;
                 int startPosition;
                 string returSträng;
-
-
-                for (int i = 0; i < data.Count; i++)
+                try
                 {
-                    //Hämta index på första siffran
-                    if ((data[i] == aktuellSiffraSOmChar && array[0].Equals(-1)))
+                    for (int i = 0; i < data.Count; i++)
                     {
-                        array[0] = i;
+                        //Hämta index på första siffran
+                        if (data[i] == aktuellSiffraSOmChar && harViFörstaSiffran == false)
+                        {
+                            arrayMedSifferPositioner[0] = i;
+                            harViFörstaSiffran = true;
+                        }
+                        //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
+                        else if ((data[i] == aktuellSiffraSOmChar && harViAndraGemensammaSiffran == false) && harViFörstaSiffran == true)
+                        {
+                            arrayMedSifferPositioner[1] = i;
+                            harViAndraGemensammaSiffran = true;
+                        }
+                        else if ((!char.IsDigit(data[i])))
+                        {
+                            return null;
+                        }
                     }
-                    //Hämta index på andra siffran och bryt loopen då vi hittat andra indexet.
-                    else if ((data[i] == aktuellSiffraSOmChar && array[1] == -2) && array[0] != -1)
-                    {
-                        array[1] = i;
-                        break;
-                    }
-                    //Denna delen skall nog vara i en övergripande metod högre i arkitekturen
-                    else if ((!char.IsDigit(data[i])) && array[0] != -1)
-                    {
-                        isBokstav = true;
-                        break;
-                    }
-                }
-                längdPåHanteradSträng = 1 + array[1] - array[0];
+                    längdPåHanteradSträng = 1 + arrayMedSifferPositioner[1] - arrayMedSifferPositioner[0];
+                    startPosition = arrayMedSifferPositioner[0];
 
-                // Nedan del bör kunna vara i en egen metod istället.
-                startPosition = array[0];
-                returSträng = ReturneraSifferordning(data, längdPåHanteradSträng, startPosition, isBokstav);
+                    returSträng = ReturneraSifferordning(data, längdPåHanteradSträng, startPosition);
+
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return null;
+                }
 
                 return returSträng;
 
 
             }
-            string ReturneraSifferordning(List<char> data, int längdPåHanteradSträng, int startPosition, bool isBokstav = false)
+            string ReturneraSifferordning(List<char> data, int längdPåHanteradSträng, int startPosition)
             {
                 string sifferordning;
                 string fullSträng = "";
@@ -129,52 +122,11 @@ namespace Labb1_PLB
                 {
                     fullSträng += data[i];
                 }
-                if (!isBokstav && längdPåHanteradSträng != -1)
-                {
-                    sifferordning = fullSträng.Substring(startPosition, längdPåHanteradSträng);
-                    isBokstav = false;
-                    return sifferordning;
-                }
-                else
-                {
-                    return null;
-                }
-                
+                sifferordning = fullSträng.Substring(startPosition, längdPåHanteradSträng);
+
+                return sifferordning;
 
             }
-            List<char> görStringTillCharArray(string sträng){
-                List<char> tempArray = new List<char>();
-                for (int i = 0; i < sträng.Length; i++)
-                    tempArray.Add(sträng[i]);
-
-                return tempArray;
-            }
-
-            void SättFärgTillRöd(bool färgVal)
-            {
-                if (färgVal)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-
-                }
-                else if (!färgVal)
-                {
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                }
-            }
-
-            long SummeraTalen(List<long> korrektTal)
-            {
-                long sum = 0;
-                for (int i = 0; i < korrektTal.Count; i++)
-                {
-                    sum += korrektTal[i];
-                }
-
-                Console.WriteLine("Summan av talen är: " + sum);
-                return sum;
-            }
-
             void SkrivUtTextMedRödFärg(string helaSträngen = "", string strängSomSkaVaraRöd = "", int startIndexPåRödSträng = 0)
             {
                 string temporärSträng;
@@ -203,6 +155,29 @@ namespace Labb1_PLB
                     Console.Write(strängSomSkaVaraRöd);
                     SättFärgTillRöd(false);
                 }
+            }
+
+            void SättFärgTillRöd(bool färgVal)
+            {
+                if (färgVal)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+
+                }
+                else if (!färgVal)
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+            }
+
+            long SummeraTalen(List<long> korrektTal)
+            {
+                long sum = 0;
+                for (int i = 0; i < korrektTal.Count; i++)
+                {
+                    sum += korrektTal[i];
+                }
+                return sum;
             }
 
         }
